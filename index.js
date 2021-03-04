@@ -11,19 +11,20 @@ let db, booksCollection
 
 async function connect() {
     await client.connect()
-    db = client.db('book')
-    booksCollection = db.collection('books')
+    db = client.db('books')
+    booksCollection = db.collection('book')
 }
 connect()
 
 // POST /books
-app.post('/books', (req, res) => {
+app.post('/books', async (req, res) => {
     //input
     let newTitle = req.body.title
     let newPrice = req.body.price
     let newUnit = req.body.unit
     let newIsbn = req.body.isbn
     let newImage = req.body.image_url
+
     // key: value
     let newBook = {
         title: newTitle,
@@ -33,21 +34,22 @@ app.post('/books', (req, res) => {
         image_url: newImage,
     }
     let bookID = 0
+
     //process
     const result = await booksCollection.insertOne(newBook)
     bookID = result.insertedId
+
     //output
+
     res.status(201).json(bookID)
 })
 
-app.get('/books/:id', (req, res) => {
+app.get('/books/:id', async (req, res) => {
     //input
     let id = req.params.id
 
-    let book = {}
-
     //process
-    book = books[id]
+    const book = await booksCollection.findOne({ _id: ObjectID(id) })
 
     //output
     res.status(200).json(book)
