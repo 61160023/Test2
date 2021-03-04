@@ -12,7 +12,6 @@ app.post('/books', (req, res) => {
     let newUnit = req.body.unit
     let newIsbn = req.body.isbn
     let newImage = req.body.image_url
-
     // key: value
     let newBook = {
         title: newTitle,
@@ -21,18 +20,26 @@ app.post('/books', (req, res) => {
         isbn: newIsbn,
         image_url: newImage,
     }
-
     let bookID = 0
-
     //process
     books.push(newBook)
-
     //n-1
     bookID = books.length - 1
+    //output
+    res.status(201).json(bookID)
+})
+
+app.get('/books/:id', (req, res) => {
+    //input
+    let id = req.params.id
+
+    let book = {}
+
+    //process
+    book = books[id]
 
     //output
-
-    res.status(201).json(bookID)
+    res.status(200).json(book)
 })
 const port = 3000
 app.listen(3000, () => console.log(`Server started  again at ${port}`))
